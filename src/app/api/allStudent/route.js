@@ -3,34 +3,12 @@ import {PrismaClient} from "@prisma/client";
 
 export async function POST(req, res){
     try {
-        const prisma = new PrismaClient()
-        const newStudent = await prisma.students.create({
-            data: {
-                first_name: 'Jhon91@gmail.com',
-                last_name: '123',
-                age: '123',
-                grade:{
+        const prisma =await new PrismaClient()
 
-
-                    create:{
-                        firstName:"Jhon",
-                        lastName:"De",
-                        mobile:"01700000000",
-                        city:"Dhaka"
-                    }
-                }
-            },
-        })
-        return NextResponse.json({newUser})
-
-
-
-
-        return NextResponse.json({name: "azad"})
+        const allStudent = await prisma.students.findMany()
+        return NextResponse.json({status: "success",data:allStudent } )
     }
-    catch (e) {
-        return NextResponse.json({data: e})
-
+    catch(e){
+        return NextResponse.json({status: "Failed",data:"error"} )
     }
-
 }

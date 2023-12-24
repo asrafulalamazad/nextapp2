@@ -8,10 +8,10 @@ export async function POST(req,res){
 
         const prisma =await new PrismaClient()
 
-        const updateStudent = await prisma.students.delete({
+        const deleteStudent = await prisma.students.delete({
           where: {id:id},
         })
-        return NextResponse.json({status: "success",data:updateStudent } )
+        return NextResponse.json({status: "success",data:deleteStudent } )
     }
     catch(e){
         return NextResponse.json({status: "Failed",data:"error"} )

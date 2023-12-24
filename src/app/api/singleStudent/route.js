@@ -1,17 +1,25 @@
-// pages/api/students/[id]/index.js
+import {NextResponse} from "next/server";
+import {PrismaClient} from "@prisma/client";
 
-import prisma from '../../../../lib/prisma';
+export async function POST(req, res){
+    try {
+        const {searchParams}= new URL(req.url)
+        const id = parseInt(searchParams.get('id'))
 
-export default async function handler(req, res) {
-    const studentId = parseInt(req.query.id);
 
-    if (req.method === 'GET') {
-        const student = await prisma.student.findUnique({
-            where: { id: studentId },
-        });
+        const prisma =await new PrismaClient()
 
-        res.status(200).json(student);
-    } else {
-        res.status(405).json({ message: 'Method not allowed' });
+
+        const allStudent = await prisma.students.findMany(
+            {
+                where: {id: id},
+                select: {id: true}
+            }
+
+        )
+        return NextResponse.json({status: "success",data:allStudent } )
+    }
+    catch(e){
+        return NextResponse.json({status: "Failed",data:"error"} )
     }
 }
