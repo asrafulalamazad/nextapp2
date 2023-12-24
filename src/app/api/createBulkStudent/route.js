@@ -1,11 +1,17 @@
-import React from 'react';
+// pages/api/students/bulk-create.js
 
-const Route = () => {
-    return (
-        <div>
-            
-        </div>
-    );
-};
+import prisma from '../../../lib/prisma';
 
-export default Route;
+export default async function handler(req, res) {
+    if (req.method === 'POST') {
+        const students = req.body;
+
+        const createdStudents = await prisma.student.createMany({
+            data: students,
+        });
+
+        res.status(201).json(createdStudents);
+    } else {
+        res.status(405).json({ message: 'Method not allowed' });
+    }
+}

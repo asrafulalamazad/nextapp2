@@ -1,11 +1,36 @@
-import React from 'react';
+import {NextResponse} from "next/server";
+import {PrismaClient} from "@prisma/client";
 
-const Route = () => {
-    return (
-        <div>
-            
-        </div>
-    );
-};
+export async function POST(req, res){
+    try {
+        const prisma = new PrismaClient()
+        const newStudent = await prisma.students.create({
+            data: {
+                first_name: 'Jhon91@gmail.com',
+                last_name: '123',
+                age: '123',
+                grade:{
 
-export default Route;
+
+                    create:{
+                        firstName:"Jhon",
+                        lastName:"De",
+                        mobile:"01700000000",
+                        city:"Dhaka"
+                    }
+                }
+            },
+        })
+        return NextResponse.json({newUser})
+
+
+
+
+        return NextResponse.json({name: "azad"})
+    }
+    catch (e) {
+        return NextResponse.json({data: e})
+
+    }
+
+}

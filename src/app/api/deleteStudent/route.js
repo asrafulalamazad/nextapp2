@@ -1,11 +1,17 @@
-import React from 'react';
+// pages/api/students/[id]/delete.js
 
-const Route = () => {
-    return (
-        <div>
-            
-        </div>
-    );
-};
+import prisma from '../../../../lib/prisma';
 
-export default Route;
+export default async function handler(req, res) {
+    const studentId = parseInt(req.query.id);
+
+    if (req.method === 'DELETE') {
+        const deletedStudent = await prisma.student.delete({
+            where: { id: studentId },
+        });
+
+        res.status(200).json(deletedStudent);
+    } else {
+        res.status(405).json({ message: 'Method not allowed' });
+    }
+}
