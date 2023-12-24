@@ -1,17 +1,23 @@
-// pages/api/students/[id]/delete.js
 
-import prisma from '../../../../lib/prisma';
 
-export default async function handler(req, res) {
-    const studentId = parseInt(req.query.id);
+import {NextResponse} from "next/server";
+import {PrismaClient} from "@prisma/client";
 
-    if (req.method === 'DELETE') {
-        const deletedStudent = await prisma.student.delete({
-            where: { id: studentId },
-        });
+export async function POST(req, res){
+    try {
+        const {searchParams}= new URL(req.url)
+        const id = parseInt(searchParams.get('id'))
+        const reqBody= await req.json();
 
-        res.status(200).json(deletedStudent);
-    } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        const prisma =await new PrismaClient()
+
+        const updateStudent = await prisma.students.update({
+          where: {id:id},
+            data: reqBody
+        })
+        return NextResponse.json({status: "success",data:updateStudent } )
+    }
+    catch(e){
+        return NextResponse.json({status: "Failed",data:"error"} )
     }
 }
