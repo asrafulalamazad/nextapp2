@@ -1,17 +1,19 @@
-// pages/api/students/bulk-create.js
 
-import prisma from '../../../lib/prisma';
 
-export default async function handler(req, res) {
-    if (req.method === 'POST') {
-        const students = req.body;
+import {NextResponse} from "next/server";
+import {PrismaClient} from "@prisma/client";
 
-        const createdStudents = await prisma.student.createMany({
-            data: students,
-        });
+export async function POST(req, res){
+    try {
+        const reqBody= await res.json()
+        const prisma =await new PrismaClient()
+        const newStudent = await prisma.students.createMany({
+            data: [reqBody]
 
-        res.status(201).json(createdStudents);
-    } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        })
+        return NextResponse.json({status: "success",data:newStudent } )
+    }
+    catch(e){
+        return NextResponse.json({status: "Failed",data:"error"} )
     }
 }
