@@ -1,20 +1,21 @@
-// pages/api/students/[id]/update.js
+import {NextResponse} from "next/server";
+import {PrismaClient} from "@prisma/client";
 
-import prisma from '../../../../lib/prisma';
+export async function POST(req, res){
+    try {
+        const {searchParams}= new URL(req.url)
+        const id = parseInt(searchParams.get('id'))
+        const reqBody= await req.json();
 
-export default async function handler(req, res) {
-    const studentId = parseInt(req.query.id);
+        const prisma =await new PrismaClient()
 
-    if (req.method === 'PUT') {
-        const { firstName, lastName, age, grade, courses } = req.body;
-
-        const updatedStudent = await prisma.student.update({
-            where: { id: studentId },
-            data: { firstName, lastName, age, grade, courses },
-        });
-
-        res.status(200).json(updatedStudent);
-    } else {
-        res.status(405).json({ message: 'Method not allowed' });
+        const updateStudent = await prisma.students.update({
+            where: {id:id},
+            data: reqBody
+        })
+        return NextResponse.json({status: "success",data:updateStudent } )
+    }
+    catch(e){
+        return NextResponse.json({status: "Failed",data:"error"} )
     }
 }
